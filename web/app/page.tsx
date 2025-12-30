@@ -23,7 +23,6 @@ export default function Page() {
 
   const [error, setError] = useState<string>("");
 
-  // Analyze state
   const [text, setText] = useState<string>(
     "I love the new features, but the rollout was messy and communication was disappointing."
   );
@@ -63,7 +62,6 @@ export default function Page() {
       body: JSON.stringify({ text: t, threshold, top_k: topK }),
     });
     const j = await r.json();
-    const ended = performance.now();
 
     if (!j.ok) {
       throw new Error(j.error || "Prediction failed");
@@ -75,7 +73,7 @@ export default function Page() {
       threshold: number;
       text: string;
     };
-
+    console.log(j, ':::')
     return {
       id: crypto.randomUUID(),
       text: data.text,

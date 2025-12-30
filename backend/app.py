@@ -14,7 +14,6 @@ MODEL_DIR = os.environ.get("MODEL_DIR", DEFAULT_MODEL_DIR)
 
 app = FastAPI(title="Emotion Model API")
 
-# Allow local dev from React/Next, and also direct browser calls.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -55,7 +54,7 @@ def _load() -> None:
 
 class PredictIn(BaseModel):
     text: str
-    threshold: Optional[float] = 0.5
+    threshold: Optional[float] = 0.3
     top_k: Optional[int] = 5
 
 
