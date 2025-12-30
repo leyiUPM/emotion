@@ -173,11 +173,6 @@ export default function Page() {
               Made by Group 11. Fine-tuned ELECTRA on GoEmotions dataset.
             </div>
           </div>
-
-          <div className="flex flex-wrap gap-2">
-            <Chip label="Model" value="ELECTRA-GoEmotions" />
-            <Chip label="Processed" value={String(store.items.length)} />
-          </div>
         </div>
 
         <Tabs value={tab} onChange={setTab} />
