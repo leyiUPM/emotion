@@ -40,8 +40,7 @@ export default function Page() {
   const [last, setLast] = useState<Prediction | null>(null);
 
   async function callPredict(t: string): Promise<Prediction> {
-    const API = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000";
-    const r = await fetch(`${API}/predict`, {
+    const r = await fetch("/api/predict", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text: t, threshold, top_k: topK }),
