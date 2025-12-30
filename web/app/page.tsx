@@ -29,12 +29,29 @@ export default function Page() {
   );
   const [batchText, setBatchText] = useState<string>(
     [
-      "The support team solved my issue quickly. Thank you!",
-      "This update broke my workflow. I'm frustrated.",
-      "The product is okay, nothing special.",
+      "I’m thrilled — this new feature is amazing and I love using it.",
+      "I’m furious because the update deleted my settings and wasted my time.",
+      "I’m anxious to use this now; I’m afraid it will crash again.",
+      "I’m relieved the issue is finally fixed. Thank you.",
+      "I’m disappointed — I expected much better quality from this release.",
+      "This is disgusting and unacceptable. I feel sick reading this message.",
+      "I’m proud of the team for shipping this on time. Great work.",
+      "I’m embarrassed because it failed during my presentation.",
+      "I’m confused — I don’t understand where the settings went.",
+      "I’m annoyed by the constant pop-ups. Please stop interrupting me.",
+      "I’m impressed by how fast and smooth everything is now.",
+      "I’m grateful for the quick support and clear explanation.",
+      "I feel hopeful that the next update will solve the remaining bugs.",
+      "I’m scared that my account could be compromised after this incident.",
+      "I regret upgrading — it was a mistake and I shouldn’t have done it.",
+      "This pricing change feels unfair and it makes me angry.",
+      "I’m shocked you released this with such obvious bugs.",
+      "I feel lonely using this app; it’s hard without any real support.",
+      "That was rude and insulting. I feel offended by the response.",
+      "Everything is fine. It works as expected."
     ].join("\n")
   );
-  const [threshold, setThreshold] = useState<number>(0.5);
+  const [threshold, setThreshold] = useState<number>(0.3);
   const [topK, setTopK] = useState<number>(5);
   const [running, setRunning] = useState<boolean>(false);
   const [last, setLast] = useState<Prediction | null>(null);
@@ -96,7 +113,6 @@ export default function Page() {
     try {
       const out: Prediction[] = [];
       for (const line of lines) {
-        // sequential keeps it simple and avoids flooding the backend
         const p = await callPredict(line);
         out.push(p);
       }
@@ -110,11 +126,11 @@ export default function Page() {
     }
   }
 
-  const topEmotionCounts = useMemo(() => topEmotions(store.items, 6), [store.items]);
+  const topEmotionCounts = useMemo(() => topEmotions(store.items, topK), [store.items]);
   const distribution = useMemo(() => emotionDistribution(store.items).slice(0, 12), [store.items]);
   const trendLabels = useMemo(() => topEmotionCounts.map((x) => x.label), [topEmotionCounts]);
   const trendData = useMemo(() => rollingTrend(store.items, trendLabels, 10), [store.items, trendLabels]);
-
+  console.log(trendData,':::')
   const strongShare = useMemo(() => {
     if (store.items.length === 0) return 0;
     const hasAny = store.items.filter((p) => p.labelsOverThreshold.length > 0).length;
@@ -186,39 +202,39 @@ export default function Page() {
                 right={<Activity className="h-4 w-4 text-slate-300" />}
               />
               <CardBody className="space-y-5">
-                <div>
+                <div className="mt-3 flex flex-wrap items-center gap-3">
+                  <label className="flex items-center gap-2 text-xs text-slate-300">
+                    Threshold
+                    <input
+                      type="number"
+                      step={0.05}
+                      min={0}
+                      max={1}
+                      className="w-20 rounded-lg border border-slate-800 bg-slate-950/40 px-2 py-1 text-slate-100"
+                      value={threshold}
+                      onChange={(e) => setThreshold(Number(e.target.value))}
+                    />
+                  </label>
+                  <label className="flex items-center gap-2 text-xs text-slate-300">
+                    Top K
+                    <input
+                      type="number"
+                      step={1}
+                      min={1}
+                      max={20}
+                      className="w-20 rounded-lg border border-slate-800 bg-slate-950/40 px-2 py-1 text-slate-100"
+                      value={topK}
+                      onChange={(e) => setTopK(Number(e.target.value))}
+                    />
+                  </label>
+                </div>
+                <div className="border-t border-slate-800 pt-5">
                   <div className="text-xs font-semibold text-slate-300">Single comment</div>
                   <textarea
                     className="mt-2 h-32 w-full rounded-xl border border-slate-800 bg-slate-950/40 p-3 text-sm text-slate-100 outline-none focus:border-slate-600"
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                   />
-                  <div className="mt-3 flex flex-wrap items-center gap-3">
-                    <label className="flex items-center gap-2 text-xs text-slate-300">
-                      Threshold
-                      <input
-                        type="number"
-                        step={0.05}
-                        min={0}
-                        max={1}
-                        className="w-20 rounded-lg border border-slate-800 bg-slate-950/40 px-2 py-1 text-slate-100"
-                        value={threshold}
-                        onChange={(e) => setThreshold(Number(e.target.value))}
-                      />
-                    </label>
-                    <label className="flex items-center gap-2 text-xs text-slate-300">
-                      Top K
-                      <input
-                        type="number"
-                        step={1}
-                        min={1}
-                        max={20}
-                        className="w-20 rounded-lg border border-slate-800 bg-slate-950/40 px-2 py-1 text-slate-100"
-                        value={topK}
-                        onChange={(e) => setTopK(Number(e.target.value))}
-                      />
-                    </label>
-                  </div>
 
                   <div className="mt-4 flex gap-2">
                     <button
@@ -359,7 +375,7 @@ export default function Page() {
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               <Card>
-                <CardHeader title="Emotion distribution" subtitle="Count of labels appearing in Top K" />
+                <CardHeader title="Top K Emotion distribution" subtitle="Count of labels appearing in Top K" />
                 <CardBody>
                   {distribution.length ? (
                     <DistributionBar data={distribution} />
@@ -370,7 +386,7 @@ export default function Page() {
               </Card>
 
               <Card>
-                <CardHeader title="Emotion trend" subtitle="Rolling window of detected emotions" />
+                <CardHeader title="Emotion trend" subtitle="Rolling window of detected emotions above threshold" />
                 <CardBody>
                   {trendData.length && trendLabels.length ? (
                     <TrendLines data={trendData} labels={trendLabels} />
@@ -380,27 +396,6 @@ export default function Page() {
                 </CardBody>
               </Card>
             </div>
-
-            <Card>
-              <CardHeader title="Quick insights" subtitle="Simple summary from recent predictions" />
-              <CardBody>
-                {store.items.length ? (
-                  <div className="space-y-2 text-sm text-slate-200">
-                    <div>
-                      Most frequent (detected over threshold):{" "}
-                      <span className="font-semibold">
-                        {topEmotionCounts.length ? topEmotionCounts.map((x) => x.label).join(", ") : "—"}
-                      </span>
-                    </div>
-                    <div className="text-slate-400">
-                      Tip: adjust threshold in Analyze to control precision vs recall for multi-label output.
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-sm text-slate-400">No data yet. Start in Analyze.</div>
-                )}
-              </CardBody>
-            </Card>
           </div>
         ) : null}
 

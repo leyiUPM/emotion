@@ -12,7 +12,7 @@ export function percentile(nums: number[], p: number): number {
   return sorted[idx];
 }
 
-export function topEmotions(preds: Prediction[], topN = 8): { label: string; count: number }[] {
+export function topEmotions(preds: Prediction[], topK: number): { label: string; count: number }[] {
   const map = new Map<string, number>();
   for (const p of preds) {
     for (const l of p.labelsOverThreshold) {
@@ -22,7 +22,7 @@ export function topEmotions(preds: Prediction[], topN = 8): { label: string; cou
   return [...map.entries()]
     .map(([label, count]) => ({ label, count }))
     .sort((a, b) => b.count - a.count)
-    .slice(0, topN);
+    .slice(0, topK);
 }
 
 export function emotionDistribution(preds: Prediction[]): { label: string; count: number }[] {
@@ -39,7 +39,6 @@ export function emotionDistribution(preds: Prediction[]): { label: string; count
 }
 
 export function rollingTrend(preds: Prediction[], labels: string[], windowSize = 10) {
-  // Returns chart-friendly points: [{ i, <label1>, <label2>, ... }]
   const out: Array<Record<string, number>> = [];
   const ordered = [...preds].sort((a, b) => a.createdAt - b.createdAt);
 

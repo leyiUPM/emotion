@@ -95,8 +95,7 @@ def predict(inp: PredictIn) -> Dict[str, Any]:
 
     assert _label_names is not None
     scored = [
-        {"label": _label_names[i], "score": float(probs[i])}
-        for i in range(len(probs))
+        {"label": _label_names[i], "score": float(probs[i])} for i in range(len(probs))
     ]
     scored_sorted = sorted(scored, key=lambda x: x["score"], reverse=True)
 

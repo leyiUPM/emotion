@@ -64,18 +64,44 @@ export function TrendLines({
   data: Array<Record<string, number>>;
   labels: string[];
 }) {
+  const COLORS = ["#38BDF8", "#22D3EE", "#A78BFA", "#FB7185", "#34D399", "#FBBF24"];
   return (
-    <div className="h-64 w-full">
+    <div style={{ width: "100%", height: 320 }}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
-          <XAxis dataKey="i" tick={{ fontSize: 12 }} />
-          <YAxis tick={{ fontSize: 12 }} />
-          <Tooltip />
-          <Legend />
-          {labels.map((label) => (
-            <Line key={label} type="monotone" dataKey={label} dot={false} />
-          ))}
+          <XAxis dataKey="t" tick={{ fontSize: 12, fill: "rgba(255,255,255,0.55)" }} />
+          <YAxis tick={{ fontSize: 12, fill: "rgba(255,255,255,0.45)" }} />
+
+          <Tooltip
+            contentStyle={{
+              background: "rgba(12, 14, 24, 0.92)",
+              border: "1px solid rgba(255,255,255,0.10)",
+              borderRadius: 14,
+              boxShadow: "0 12px 30px rgba(0,0,0,0.35)",
+              backdropFilter: "blur(10px)",
+            }}
+            labelStyle={{ color: "rgba(255,255,255,0.88)", fontWeight: 600 }}
+          />
+          <Legend
+            wrapperStyle={{ color: "rgba(255,255,255,0.7)" }}
+            iconType="circle"
+          />
+
+          {labels.map((k, i) => {
+            const c = COLORS[i % COLORS.length];
+            return (
+              <Line
+                key={k}
+                type="monotone"
+                dataKey={k}
+                stroke={c}
+                strokeWidth={2}
+                dot={false}
+                activeDot={{ r: 5, stroke: c, fill: "#0B1220" }}
+              />
+            );
+          })}
         </LineChart>
       </ResponsiveContainer>
     </div>
