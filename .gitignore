@@ -57,7 +57,6 @@ dist/
 *.ipynb
 
 # --- Model / data artifacts (keep code only) ---
-backend/model/
 runs/
 results.csv
 *.ckpt
