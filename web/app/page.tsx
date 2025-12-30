@@ -353,14 +353,13 @@ export default function Page() {
                   <div className="text-xl font-semibold">
                     {topEmotionCounts.length ? topEmotionCounts.map((x) => x.label).slice(0, 2).join(", ") : "—"}
                   </div>
-                  <div className="mt-1 text-xs text-slate-400">Detected over threshold</div>
                 </CardBody>
               </Card>
               <Card>
                 <CardHeader title="Emotion Over Threshold" right={<BarChart3 className="h-4 w-4 text-slate-300" />} />
                 <CardBody>
                   <div className="text-3xl font-semibold">{store.items.length ? `${strongShare.toFixed(0)}%` : "—"}</div>
-                  <div className="mt-1 text-xs text-slate-400">Comments with ≥1 label over threshold</div>
+                  <div className="mt-1 text-xs text-slate-400">Percentages of labels over threshold in each run</div>
                 </CardBody>
               </Card>
               <Card>
