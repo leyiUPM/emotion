@@ -130,7 +130,6 @@ export default function Page() {
   const distribution = useMemo(() => emotionDistribution(store.items).slice(0, 12), [store.items]);
   const trendLabels = useMemo(() => topEmotionCounts.map((x) => x.label), [topEmotionCounts]);
   const trendData = useMemo(() => rollingTrend(store.items, trendLabels, 10), [store.items, trendLabels]);
-  console.log(trendData,':::')
   const strongShare = useMemo(() => {
     if (store.items.length === 0) return 0;
     const hasAny = store.items.filter((p) => p.labelsOverThreshold.length > 0).length;
@@ -351,7 +350,7 @@ export default function Page() {
               <Card>
                 <CardHeader title="Most common emotions" right={<BarChart3 className="h-4 w-4 text-slate-300" />} />
                 <CardBody>
-                  <div className="text-3xl font-semibold">
+                  <div className="text-xl font-semibold">
                     {topEmotionCounts.length ? topEmotionCounts.map((x) => x.label).slice(0, 2).join(", ") : "—"}
                   </div>
                   <div className="mt-1 text-xs text-slate-400">Detected over threshold</div>
