@@ -50,7 +50,7 @@ export default function Page() {
       "Everything is fine. It works as expected."
     ].join("\n")
   );
-  const [threshold, setThreshold] = useState<number>(0.3);
+  const [threshold, setThreshold] = useState<number>(0.2);
   const [topK, setTopK] = useState<number>(5);
   const [running, setRunning] = useState<boolean>(false);
   const [last, setLast] = useState<Prediction | null>(null);
@@ -62,7 +62,6 @@ export default function Page() {
       body: JSON.stringify({ text: t, threshold, top_k: topK }),
     });
     const j = await r.json();
-
     if (!j.ok) {
       throw new Error(j.error || "Prediction failed");
     }
@@ -73,7 +72,7 @@ export default function Page() {
       threshold: number;
       text: string;
     };
-    console.log(j, ':::')
+
     return {
       id: crypto.randomUUID(),
       text: data.text,
@@ -139,10 +138,10 @@ export default function Page() {
     return mean(store.items.map((p) => p.labelsOverThreshold.length));
   }, [store.items]);
 
-  // Explore state
+
   const [query, setQuery] = useState<string>("");
   const [emotion, setEmotion] = useState<string>("");
-  const [minScore, setMinScore] = useState<number>(0.5);
+  const [minScore, setMinScore] = useState<number>(0.2);
   const [sort, setSort] = useState<"newest" | "highest">("newest");
 
   const explored = useMemo(() => {
@@ -152,21 +151,21 @@ export default function Page() {
       const q = query.trim().toLowerCase();
       rows = rows.filter((p) => p.text.toLowerCase().includes(q));
     }
-
     if (emotion.trim()) {
       const e = emotion.trim();
-      rows = rows.filter((p) => p.labelsOverThreshold.some((x) => x.label === e && x.score >= minScore));
+      rows = rows.filter((p) => p.labelsOverThreshold.some((x) => x.label === e));
     }
+    rows = rows.filter((p) => p.labelsOverThreshold.some((x) => x.score >= minScore));
 
-    if (sort === "newest") rows.sort((a, b) => b.createdAt - a.createdAt);
-    else {
+    if (sort === "newest") {
+      rows.sort((a, b) => b.createdAt - a.createdAt) 
+    } else {
       rows.sort((a, b) => {
         const aMax = Math.max(...a.labelsOverThreshold.map((x) => x.score), 0);
         const bMax = Math.max(...b.labelsOverThreshold.map((x) => x.score), 0);
         return bMax - aMax;
       });
     }
-
     return rows;
   }, [store.items, query, emotion, minScore, sort]);
 
