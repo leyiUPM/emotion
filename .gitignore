@@ -60,7 +60,6 @@ dist/
 runs/
 results.csv
 *.ckpt
-*.safetensors
 *.bin
 *.pt
 *.pth
