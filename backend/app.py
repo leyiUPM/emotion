@@ -54,7 +54,7 @@ def _load() -> None:
 
 class PredictIn(BaseModel):
     text: str
-    threshold: Optional[float] = 0.3
+    threshold: Optional[float] = 0.2
     top_k: Optional[int] = 5
 
 
