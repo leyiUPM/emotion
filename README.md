@@ -9,6 +9,7 @@ This repo contains:
 
 # Model Used
 ELECTRA-Small discriminator: https://huggingface.co/google/electra-small-discriminator
+
 GoEmotions Training Dataset: https://huggingface.co/papers/2005.00547
 
 ## Train Model
